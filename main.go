@@ -18,4 +18,11 @@ func main() {
 		fmt.Println(album)
 	}
 
+	alb, err := repository.GetAlbumByID(2)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Printf("ID: %d, Title: %s, Artist: %s, Price: %0.2f\n", alb.ID, alb.Title, alb.Artist, alb.Price)
+
 }

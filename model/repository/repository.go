@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"database/sql"
+
 	"github.com/mfcbentes/mysql-go/db"
 	"github.com/mfcbentes/mysql-go/model"
 )
@@ -37,4 +39,23 @@ func GetAlbums() ([]model.Album, error) {
 		return nil, err
 	}
 	return albums, nil
+}
+
+func GetAlbumByID(id int64) (*model.Album, error) {
+	alb := &model.Album{}
+
+	conn, err := db.GetConnection()
+	if err != nil {
+		return nil, err
+	}
+	defer conn.Close()
+
+	row := conn.QueryRow("SELECT * FROM album WHERE id = ?", id)
+	if err := row.Scan(&alb.ID, &alb.Title, &alb.Artist, &alb.Price); err != nil {
+		if err == sql.ErrNoRows {
+			return nil, nil
+		}
+		return nil, err
+	}
+	return alb, nil
 }
