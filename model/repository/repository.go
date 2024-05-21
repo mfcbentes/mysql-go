@@ -2,6 +2,7 @@ package repository
 
 import (
 	"database/sql"
+	"fmt"
 
 	"github.com/mfcbentes/mysql-go/db"
 	"github.com/mfcbentes/mysql-go/model"
@@ -84,4 +85,34 @@ func AddAlbum(alb model.Album) (int64, error) {
 	}
 
 	return id, nil
+}
+
+func UpdateAlbum(alb model.Album) error {
+	conn, err := db.GetConnection()
+	if err != nil {
+		return err
+	}
+	defer conn.Close()
+
+	row := conn.QueryRow("SELECT id FROM album WHERE id = ?", alb.ID)
+	var id int64
+	if err := row.Scan(&id); err != nil {
+		if err == sql.ErrNoRows {
+			return fmt.Errorf("no album found with id %d", alb.ID)
+		}
+		return err
+	}
+
+	stmt, err := conn.Prepare("UPDATE album SET title = ?, artist = ?, price = ? WHERE id = ?")
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(alb.Title, alb.Artist, alb.Price, alb.ID)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
