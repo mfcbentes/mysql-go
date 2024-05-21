@@ -116,3 +116,24 @@ func UpdateAlbum(alb model.Album) error {
 
 	return nil
 }
+
+func DeleteAlbum(id int64) error {
+	conn, err := db.GetConnection()
+	if err != nil {
+		return err
+	}
+	defer conn.Close()
+
+	stmt, err := conn.Prepare("DELETE FROM album WHERE id = ?")
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(id)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

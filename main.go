@@ -54,4 +54,10 @@ func main() {
 
 	fmt.Println("Album updated successfully")
 
+	// Delete album
+	err = repository.DeleteAlbum(3)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 }
