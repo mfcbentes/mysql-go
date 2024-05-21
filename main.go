@@ -1,26 +1,21 @@
 package main
 
 import (
-	"database/sql"
-	"os"
+	"fmt"
+	"log"
 
-	_ "github.com/go-sql-driver/mysql"
+	"github.com/mfcbentes/mysql-go/model/repository"
 )
-
-const (
-	DBHOST = "DBHOST"
-	DBUSER = "DBUSER"
-	DBPASS = "DBPASS"
-	DBNAME = "DBNAME"
-)
-
-var db *sql.DB
 
 func main() {
-	_, err := sql.Open("mysql", os.Getenv(DBUSER)+":"+os.Getenv(DBPASS)+"@tcp("+os.Getenv(DBHOST)+")/"+os.Getenv(DBNAME)+"")
+
+	albums, err := repository.GetAlbums()
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 
-	println("conectado!")
+	for _, album := range albums {
+		fmt.Println(album)
+	}
+
 }
