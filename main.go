@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"os"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -16,7 +17,7 @@ const (
 var db *sql.DB
 
 func main() {
-	_, err := sql.Open("mysql", DBUSER+":"+DBPASS+"@tcp("+DBHOST+")/"+DBNAME+"")
+	_, err := sql.Open("mysql", os.Getenv(DBUSER)+":"+os.Getenv(DBPASS)+"@tcp("+os.Getenv(DBHOST)+")/"+os.Getenv(DBNAME)+"")
 	if err != nil {
 		panic(err)
 	}
