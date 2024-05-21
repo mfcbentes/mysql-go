@@ -59,3 +59,29 @@ func GetAlbumByID(id int64) (*model.Album, error) {
 	}
 	return alb, nil
 }
+
+func AddAlbum(alb model.Album) (int64, error) {
+	conn, err := db.GetConnection()
+	if err != nil {
+		return 0, err
+	}
+	defer conn.Close()
+
+	stmt, err := conn.Prepare("INSERT INTO album (title, artist, price) VALUES (?, ?, ?)")
+	if err != nil {
+		return 0, err
+	}
+	defer stmt.Close()
+
+	result, err := stmt.Exec(alb.Title, alb.Artist, alb.Price)
+	if err != nil {
+		return 0, err
+	}
+
+	id, err := result.LastInsertId()
+	if err != nil {
+		return 0, err
+	}
+
+	return id, nil
+}
